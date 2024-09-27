@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-screen">
+        <h1 class="text-3xl font-bold mb-8">Voice Assistant</h1>
+        <svg id="waveform" class="w-64 h-16 mb-8" viewBox="0 0 300 60">
+            <path class="waveform-line stroke-current text-gray-400" d="M0 30 L300 30" stroke-width="2" fill="none" />
+        </svg>
+        <button id="recordButton"
+            class="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center focus:outline-none hover:bg-blue-600 transition-colors duration-300">
+            <svg class="mic-icon w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                <path
+                    d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+            </svg>
+            <svg class="loading-icon w-12 h-12 text-white hidden animate-spin" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z" />
+            </svg>
+        </button>
+        <audio id="audioPlayer" class="mt-8 hidden" controls></audio>
+        <button id="settingsButton"
+            class="mt-8 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center">
+            <svg class="w-4 h-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span>Settings</span>
+        </button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">API Settings</h3>
+                <div class="mt-2 px-7 py-3">
+                    <input type="password" id="anthropicApiKey" placeholder="Anthropic API Key"
+                        class="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1">
+                    <input type="password" id="groqApiKey" placeholder="Groq API Key"
+                        class="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1">
+                    <input type="password" id="elevenLabsApiKey" placeholder="ElevenLabs API Key"
+                        class="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1">
+                    <button id="saveApiKeys"
+                        class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Save API Keys
+                    </button>
+                </div>
+                <div class="mt-4 text-sm text-gray-600">
+                    <p>To obtain API keys:</p>
+                    <ul class="list-disc list-inside text-left">
+                        <li>Anthropic API: <a href="https://www.anthropic.com" target="_blank"
+                                class="text-blue-500 hover:underline">anthropic.com</a></li>
+                        <li>Groq API: <a href="https://www.groq.com" target="_blank"
+                                class="text-blue-500 hover:underline">groq.com</a></li>
+                        <li>ElevenLabs API: <a href="https://www.elevenlabs.io" target="_blank"
+                                class="text-blue-500 hover:underline">elevenlabs.io</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let mediaRecorder;
+        let audioContext;
+        let recordButton = document.getElementById('recordButton');
+        let micIcon = recordButton.querySelector('.mic-icon');
+        let loadingIcon = recordButton.querySelector('.loading-icon');
+        let audioPlayer = document.getElementById('audioPlayer');
+        let waveform = document.getElementById('waveform');
+        let waveformPath = waveform.querySelector('path');
+        let settingsButton = document.getElementById('settingsButton');
+        let settingsModal = document.getElementById('settingsModal');
+        let isRecording = false;
+        let audioChunks = [];
+        let animationId;
+
+        // API Key handling
+        const apiKeys = ['anthropicApiKey', 'groqApiKey', 'elevenLabsApiKey'];
+        const saveApiKeysButton = document.getElementById('saveApiKeys');
+
+        // Load API keys from cookies and check if all are set
+        function loadApiKeys() {
+            let allKeysSet = true;
+            apiKeys.forEach(key => {
+                const value = getCookie(key);
+                if (value) {
+                    document.getElementById(key).value = value;
+                } else {
+                    allKeysSet = false;
+                }
+            });
+            return allKeysSet;
+        }
+
+        // Show settings modal if not all API keys are set
+        if (!loadApiKeys()) {
+            settingsModal.classList.remove('hidden');
+        }
+
+        // Save API keys to cookies
+        saveApiKeysButton.addEventListener('click', () => {
+            apiKeys.forEach(key => {
+                const value = document.getElementById(key).value;
+                setCookie(key, value, 3650); // Set cookie for 10 years
+            });
+            settingsModal.classList.add('hidden');
+            alert('API keys saved successfully!');
+        });
+
+        // Toggle settings modal
+        settingsButton.addEventListener('click', () => {
+            settingsModal.classList.toggle('hidden');
+        });
+
+        // Close modal when clicking outside
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.add('hidden');
+            }
+        });
+
+        // Ensure the settings button and modal are properly initialized
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsModal = document.getElementById('settingsModal');
+
+            if (settingsButton && settingsModal) {
+                settingsButton.addEventListener('click', () => {
+                    settingsModal.classList.toggle('hidden');
+                });
+            } else {
+                console.error('Settings button or modal not found');
+            }
+        });
+
+        // Immediately set up the event listener for the settings button
+        settingsButton.addEventListener('click', () => {
+            settingsModal.classList.toggle('hidden');
+        });
+
+        // Cookie functions
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        async function setupMediaRecorder() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.addEventListener('dataavailable', event => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            });
+
+            mediaRecorder.addEventListener('stop', processAudioData);
+        }
+
+        function startRecording() {
+            if (!isRecording) {
+                isRecording = true;
+                audioChunks = [];
+                mediaRecorder.start();
+                recordButton.classList.add('bg-red-500');
+                recordButton.classList.remove('bg-blue-500');
+            }
+        }
+
+        function stopRecording() {
+            if (isRecording) {
+                isRecording = false;
+                mediaRecorder.stop();
+                recordButton.classList.remove('bg-red-500');
+                recordButton.classList.add('bg-blue-500');
+                micIcon.classList.add('hidden');
+                loadingIcon.classList.remove('hidden');
+            }
+        }
+
+        async function processAudioData() {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const groqApiKey = document.getElementById('groqApiKey').value;
+            const anthropicApiKey = document.getElementById('anthropicApiKey').value;
+            const elevenLabsApiKey = document.getElementById('elevenLabsApiKey').value;
+
+            try {
+                // Speech to Text
+                const transcription = await speechToText(audioBlob, groqApiKey);
+
+                // LLM Processing
+                const llmResponse = await processWithLLM(transcription, anthropicApiKey);
+
+                // Text to Speech
+                const audioResponse = await textToSpeech(llmResponse, elevenLabsApiKey);
+
+                // Play the response
+                const audioUrl = URL.createObjectURL(audioResponse);
+                audioPlayer.src = audioUrl;
+                audioPlayer.classList.remove('hidden');
+                audioPlayer.play();
+                startWaveformAnimation();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing the audio. Please check your API keys and try again.');
+            } finally {
+                micIcon.classList.remove('hidden');
+                loadingIcon.classList.add('hidden');
+            }
+        }
+
+        async function speechToText(audioBlob, apiKey) {
+            const formData = new FormData();
+            formData.append('file', audioBlob, 'audio.webm');
+            formData.append('model', 'whisper-large-v3');
+            formData.append('response_format', 'json');
+
+            const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Speech to text error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.text;
+        }
+
+        async function processWithLLM(text, apiKey) {
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01',
+                    'anthropic-dangerous-direct-browser-access': 'true'
+                },
+                body: JSON.stringify({
+                    model: "claude-3-5-sonnet-20240620",
+                    max_tokens: 1024,
+                    messages: [
+                        { role: "user", content: text }
+                    ],
+                    system: "You are a voice assistant. Give very short replies."
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`LLM processing error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.content[0].text;
+        }
+
+        async function textToSpeech(text, apiKey) {
+            const ELEVEN_LABS_VOICE_ID = 'iP95p4xoKVk53GoZ742B';
+            const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_LABS_VOICE_ID}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'audio/mpeg',
+                    'xi-api-key': apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: text,
+                    model_id: "eleven_monolingual_v1",
+                    voice_settings: {
+                        stability: 0.5,
+                        similarity_boost: 0.5
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Text to speech error: ${response.status}`);
+            }
+
+            return await response.blob();
+        }
+
+        function stopAudioPlayback() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            stopWaveformAnimation();
+        }
+
+        function startWaveformAnimation() {
+            const frequencyCount = 20;
+            const frequencies = Array.from({ length: frequencyCount }, () => Math.random() * 30);
+            let phase = 0;
+
+            function animateWaveform() {
+                phase += 0.1;
+                let path = `M0 30`;
+
+                for (let i = 0; i < frequencyCount; i++) {
+                    const x = (i + 1) * (300 / (frequencyCount + 1));
+                    const y = 30 + Math.sin(phase + i * 0.3) * frequencies[i];
+                    path += ` L${x} ${y}`;
+                }
+
+                waveformPath.setAttribute('d', path);
+                animationId = requestAnimationFrame(animateWaveform);
+            }
+            animateWaveform();
+        }
+
+        function stopWaveformAnimation() {
+            cancelAnimationFrame(animationId);
+            waveformPath.setAttribute('d', 'M0 30 L300 30');
+        }
+
+        recordButton.addEventListener('mousedown', handleRecordStart);
+        recordButton.addEventListener('mouseup', handleRecordStop);
+        recordButton.addEventListener('mouseleave', handleRecordStop);
+
+        recordButton.addEventListener('touchstart', handleRecordStart);
+        recordButton.addEventListener('touchend', handleRecordStop);
+
+        async function handleRecordStart(event) {
+            event.preventDefault();
+            if (!mediaRecorder) {
+                await setupMediaRecorder();
+            }
+            stopAudioPlayback();
+            startRecording();
+        }
+
+        function handleRecordStop(event) {
+            event.preventDefault();
+            stopRecording();
+        }
+
+        audioPlayer.addEventListener('ended', stopWaveformAnimation);
+    </script>
+</body>
+
+</html>
