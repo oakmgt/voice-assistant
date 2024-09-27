@@ -1,11 +1,9 @@
-# 🎙️ Voice Assistant Web App
+# 🎙️ Voice Assistant
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![GitHub Stars](https://img.shields.io/github/stars/yourusername/voice-assistant-web-app.svg)](https://github.com/yourusername/voice-assistant-web-app/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/oakmgt/voice-assistant.svg)](https://github.com/oakmgt/voice-assistant/stargazers)
 
 An elegant, easy-to-use voice assistant web application powered by cutting-edge AI technologies. Speak your mind, and get intelligent responses in natural language!
-
-![Voice Assistant Demo](https://your-image-url-here.com/demo.gif)
 
 ## ✨ Features
 
@@ -19,12 +17,12 @@ An elegant, easy-to-use voice assistant web application powered by cutting-edge 
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/voice-assistant-web-app.git
+   git clone https://github.com/oakmgt/voice-assistant.git
    ```
 
 2. Navigate to the project directory:
    ```
-   cd voice-assistant-web-app
+   cd voice-assistant
    ```
 
 3. Open `index.html` in your preferred web browser.
@@ -38,7 +36,7 @@ An elegant, easy-to-use voice assistant web application powered by cutting-edge 
 1. Fork this repository.
 2. Go to your fork's Settings > Pages.
 3. Set the source to the main branch.
-4. Your app will be live at `https://yourusername.github.io/voice-assistant-web-app/`
+4. Your app will be live at `https://yourusername.github.io/voice-assistantp/`
 
 ## 🔑 API Keys
 
@@ -51,7 +49,7 @@ Enter these in the app's settings to enable full functionality.
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/yourusername/voice-assistant-web-app/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/oakmgt/voice-assistant/issues).
 
 ## 📄 License
 
@@ -63,4 +61,4 @@ Give a ⭐️ if this project helped you!
 
 ---
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by [OAK MGT](https://github.com/oakmgt) [https://oakmgt.be](www.oakmgt.be)
