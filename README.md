@@ -5,6 +5,8 @@
 
 An elegant, easy-to-use voice assistant web application powered by cutting-edge AI technologies. Speak your mind, and get intelligent responses in natural language!
 
+[View Demo](https://oakmgt.be/voice-assistant/)
+
 ## ✨ Features
 
 - 🎤 Speech-to-Text: Accurately transcribe your voice input
