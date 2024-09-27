@@ -176,16 +176,24 @@
         }
 
         async function setupMediaRecorder() {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error('getUserMedia is not supported in this browser');
+            }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
 
-            mediaRecorder.addEventListener('dataavailable', event => {
-                if (event.data.size > 0) {
-                    audioChunks.push(event.data);
-                }
-            });
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                });
 
-            mediaRecorder.addEventListener('stop', processAudioData);
+                mediaRecorder.addEventListener('stop', processAudioData);
+            } catch (error) {
+                console.error('Error accessing the microphone:', error);
+                alert('Unable to access the microphone. Please check your browser settings and try again.');
+            }
         }
 
         function startRecording() {
@@ -353,7 +361,13 @@
         async function handleRecordToggle(event) {
             event.preventDefault();
             if (!mediaRecorder) {
-                await setupMediaRecorder();
+                try {
+                    await setupMediaRecorder();
+                } catch (error) {
+                    console.error('Failed to set up media recorder:', error);
+                    alert('Unable to access the microphone. Please check your browser settings and try again.');
+                    return;
+                }
             }
             if (!isRecording) {
                 stopAudioPlayback();
