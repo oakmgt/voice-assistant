@@ -347,26 +347,28 @@
             waveformPath.setAttribute('d', 'M0 30 L300 30');
         }
 
-        recordButton.addEventListener('mousedown', handleRecordStart);
-        recordButton.addEventListener('mouseup', handleRecordStop);
-        recordButton.addEventListener('mouseleave', handleRecordStop);
+        let isRecording = false;
 
-        recordButton.addEventListener('touchstart', handleRecordStart);
-        recordButton.addEventListener('touchend', handleRecordStop);
+        recordButton.addEventListener('mousedown', handleRecordToggle);
+        recordButton.addEventListener('touchstart', handleRecordToggle);
 
-        async function handleRecordStart(event) {
+        async function handleRecordToggle(event) {
             event.preventDefault();
             if (!mediaRecorder) {
                 await setupMediaRecorder();
             }
-            stopAudioPlayback();
-            startRecording();
+            if (!isRecording) {
+                stopAudioPlayback();
+                startRecording();
+            } else {
+                stopRecording();
+            }
         }
 
-        function handleRecordStop(event) {
+        // Prevent default behavior for touchend to avoid unintended actions
+        recordButton.addEventListener('touchend', (event) => {
             event.preventDefault();
-            stopRecording();
-        }
+        });
 
         audioPlayer.addEventListener('ended', stopWaveformAnimation);
     </script>
